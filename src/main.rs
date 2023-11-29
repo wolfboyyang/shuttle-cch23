@@ -1,7 +1,5 @@
 use axum::{http::StatusCode, response::IntoResponse, routing::get, Router};
 
-mod shuttle_axum;
-
 async fn hello_world() -> &'static str {
     "Hello, world!"
 }
