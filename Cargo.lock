@@ -260,6 +260,7 @@ name = "cch23-wolfboyyang"
 version = "0.1.0"
 dependencies = [
  "axum 0.7.1",
+ "serde",
  "shuttle-axum",
  "shuttle-runtime",
  "tracing",
