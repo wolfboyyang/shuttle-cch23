@@ -51,21 +51,11 @@ async fn handle_cursed_candy_eating_contest(
         .iter()
         .max_by(|x, y| x.speed.partial_cmp(&y.speed).unwrap())
         .unwrap();
-    let tallest_deer = payload
-        .iter()
-        .max_by(|x, y| x.height.partial_cmp(&y.height).unwrap())
-        .unwrap();
-    let magician = payload
-        .iter()
-        .max_by(|x, y| x.snow_magic_power.partial_cmp(&y.snow_magic_power).unwrap())
-        .unwrap();
+    let tallest_deer = payload.iter().max_by_key(|x| x.height).unwrap();
+    let magician = payload.iter().max_by_key(|x| x.snow_magic_power).unwrap();
     let consumer = payload
         .iter()
-        .max_by(|x, y| {
-            x.candies_eat_yesterday
-                .partial_cmp(&y.candies_eat_yesterday)
-                .unwrap()
-        })
+        .max_by_key(|x| x.candies_eat_yesterday)
         .unwrap();
     let report = format!(
         r#"{{
