@@ -1,5 +1,5 @@
 use axum::{http::StatusCode, response::IntoResponse, routing::post, Json, Router};
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
 #[derive(Deserialize)]
 struct Serdeer {
@@ -15,6 +15,14 @@ struct Serdeer {
     candies_eat_yesterday: Option<i32>,
 }
 
+#[derive(Serialize)]
+struct Report {
+    fastest: String,
+    tallest: String,
+    magician: String,
+    consumer: String,
+}
+
 pub fn task() -> Router {
     Router::new()
         .route("/strength", post(calculate_combined_strength))
@@ -26,9 +34,7 @@ async fn calculate_combined_strength(Json(payload): Json<Vec<Serdeer>>) -> impl 
     (StatusCode::OK, strength.to_string())
 }
 
-async fn handle_cursed_candy_eating_contest(
-    Json(payload): Json<Vec<Serdeer>>,
-) -> impl IntoResponse {
+async fn handle_cursed_candy_eating_contest(Json(payload): Json<Vec<Serdeer>>) -> Json<Report> {
     let fastest_deer = payload
         .iter()
         .max_by(|x, y| x.speed.partial_cmp(&y.speed).unwrap())
@@ -39,22 +45,26 @@ async fn handle_cursed_candy_eating_contest(
         .iter()
         .max_by_key(|x| x.candies_eat_yesterday)
         .unwrap();
-    let report = format!(
-        r#"{{
-  "fastest": "Speeding past the finish line with a strength of {} is {}",
-  "tallest": "{} is standing tall with his {} cm wide antlers",
-  "magician": "{} could blast you away with a snow magic power of {}",
-  "consumer": "{} ate lots of candies, but also some grass"
-}}"#,
-        fastest_deer.strength,
-        fastest_deer.name,
-        tallest_deer.name,
-        tallest_deer.antler_width.unwrap(),
-        magician.name,
-        magician.snow_magic_power.unwrap(),
-        consumer.name
-    );
-    (StatusCode::OK, report)
+
+    let report = Report {
+        fastest: format!(
+            "Speeding past the finish line with a strength of {} is {}",
+            fastest_deer.strength, fastest_deer.name
+        ),
+        tallest: format!(
+            "{} is standing tall with his {} cm wide antlers",
+            tallest_deer.name,
+            tallest_deer.antler_width.unwrap()
+        ),
+        magician: format!(
+            "{} could blast you away with a snow magic power of {}",
+            magician.name,
+            magician.snow_magic_power.unwrap()
+        ),
+        consumer: format!("{} ate lots of candies, but also some grass", consumer.name),
+    };
+
+    Json(report)
 }
 
 #[cfg(test)]
