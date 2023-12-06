@@ -15,7 +15,7 @@ struct Serdeer {
     candies_eat_yesterday: Option<i32>,
 }
 
-pub fn task_router() -> Router {
+pub fn task() -> Router {
     Router::new()
         .route("/strength", post(calculate_combined_strength))
         .route("/contest", post(handle_cursed_candy_eating_contest))

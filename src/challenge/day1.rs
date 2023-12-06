@@ -1,6 +1,6 @@
 use axum::{extract::Path, http::StatusCode, response::IntoResponse, routing::get, Router};
 
-pub fn task_router() -> Router {
+pub fn task() -> Router {
     Router::new().route("/*path", get(cube_the_bits))
 }
 
