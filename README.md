@@ -7,3 +7,10 @@ Useful links:
 - [info](https://www.shuttle.rs/cch)
 - [Scoreboard](https://www.shuttle.rs/cch#scoreboard)
 - [console](https://console.shuttle.rs/cch)
+
+## Test
+
+Test with curl or [REST Client](https://marketplace.visualstudio.com/items?itemName=humao.rest-client) or `cargo test`.
+
+Test specific day (e.g., day1):
+`cargo test day1`

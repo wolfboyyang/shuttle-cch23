@@ -1,0 +1,61 @@
+########################################
+# 🎄 Day -1: Get your winter boots on! #
+########################################
+
+### ⭐ Task 1: Everything is OK
+GET http://localhost:8000/
+
+### 🎁 Task 2: Fake error
+GET http://localhost:8000/-1/error
+
+###############################################
+# 🎄 Day 1: Packet "exclusive-cube" not found #
+###############################################
+
+### ⭐ Task 1: Cube the bits
+GET http://localhost:8000/1/4/8
+
+### 🎁 Task 2: The sled ID system
+GET http://localhost:8000/1/4/5/8/10
+
+##############################################################
+# 🎄 Day 4: What do you call a serialized reindeer? Serdeer! #
+##############################################################
+
+### ⭐ Task 1: Reindeer cheer
+POST http://localhost:8000/4/strength
+content-type: application/json
+
+[
+    { "name": "Dasher", "strength": 5 },
+    { "name": "Dancer", "strength": 6 },
+    { "name": "Prancer", "strength": 4 },
+    { "name": "Vixen", "strength": 7 }
+]
+
+### 🎁 Task 2: Cursed candy eating contest 
+POST http://localhost:8000/4/contest
+content-type: application/json
+
+[
+    {
+      "name": "Dasher",
+      "strength": 5,
+      "speed": 50.4,
+      "height": 80,
+      "antler_width": 36,
+      "snow_magic_power": 9001,
+      "favorite_food": "hay",
+      "cAnD13s_3ATeN-yesT3rdAy": 2
+    },
+    {
+      "name": "Dancer",
+      "strength": 6,
+      "speed": 48.2,
+      "height": 65,
+      "antler_width": 37,
+      "snow_magic_power": 4004,
+      "favorite_food": "grass",
+      "cAnD13s_3ATeN-yesT3rdAy": 5
+    }
+]
