@@ -59,3 +59,22 @@ content-type: application/json
       "cAnD13s_3ATeN-yesT3rdAy": 5
     }
 ]
+
+############################
+# 🎄 Day 6: Elf on a shelf #
+############################
+
+### ⭐ Task 1: Never count on an elf
+POST http://localhost:8000/6
+content-type: text/plain
+
+"The mischievous elf peeked out from behind the toy workshop,
+and another elf joined in the festive dance.
+Look, there is also an elf on that shelf!"
+
+### ⭐ Task 2: Shelf under an elf?
+POST http://localhost:8000/6
+content-type: text/plain
+
+"there is an elf on a shelf on an elf.
+there is also another shelf in Belfast."
