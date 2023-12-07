@@ -16,7 +16,8 @@ pub fn task() -> Router {
 
 async fn count_elf(body: String) -> Json<Report> {
     let elf_count = body.matches("elf").count();
-    let elf_on_a_shelf_count = body.matches("elf on a shelf").count();
+    let elf_on_a_shelf_count =
+        body.matches("elf on a shelf").count() + body.matches("elf on that shelf").count();
     let shelf_count = body.matches("shelf").count();
     let report = Report {
         elf: elf_count,
