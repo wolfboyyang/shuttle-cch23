@@ -3,46 +3,7 @@ use axum_extra::extract::cookie::CookieJar;
 use base64::{engine::general_purpose, Engine as _};
 use serde::{Deserialize, Serialize};
 
-#[derive(Serialize, Deserialize, PartialEq, Debug, Default)]
-struct Recipe {
-    #[serde(default)]
-    flour: i32,
-
-    #[serde(default)]
-    sugar: i32,
-
-    #[serde(default)]
-    butter: i32,
-
-    #[serde(default)]
-    #[serde(rename = "baking powder")]
-    baking_powder: i32,
-
-    #[serde(default)]
-    #[serde(rename = "chocolate chips")]
-    chocolate_chips: i32,
-}
-
-impl Recipe {
-    fn bake(&mut self, recipe: &Self) -> Result<&str, &str> {
-        if self.flour >= recipe.flour
-            && self.sugar >= recipe.sugar
-            && self.butter >= recipe.butter
-            && self.baking_powder >= recipe.baking_powder
-            && self.chocolate_chips >= recipe.chocolate_chips
-        {
-            self.flour -= recipe.flour;
-            self.sugar -= recipe.sugar;
-            self.butter -= recipe.butter;
-            self.baking_powder -= recipe.baking_powder;
-            self.chocolate_chips -= recipe.chocolate_chips;
-
-            Ok("Done")
-        } else {
-            Err("Not enough ingredients!")
-        }
-    }
-}
+type Recipe = std::collections::HashMap<String, i32>;
 
 #[derive(Serialize, Deserialize)]
 struct Kitchen {
@@ -78,11 +39,25 @@ async fn bake_cookie(jar: CookieJar) -> Json<Report> {
         .decode(encoded_recipe.value())
         .unwrap();
     let mut kitchen = serde_json::from_slice::<Kitchen>(&decoded_recipe).unwrap();
-    let mut cookies = 0;
-    while kitchen.pantry.bake(&kitchen.recipe).is_ok() {
-        cookies += 1;
+
+    let cookies = kitchen
+        .pantry
+        .iter()
+        .map(|(ingredient, amount_in_store)| {
+            if let Some(amount_needed) = kitchen.recipe.get(ingredient) {
+                amount_in_store / amount_needed
+            } else {
+                0
+            }
+        })
+        .min()
+        .unwrap_or(0);
+
+    for (ingredient, amount_in_store) in kitchen.pantry.iter_mut() {
+        if let Some(amount_needed) = kitchen.recipe.get(ingredient) {
+            *amount_in_store -= amount_needed * cookies
+        }
     }
-    //Json(report)
     Json(Report {
         cookies,
         pantry: kitchen.pantry,
@@ -116,8 +91,8 @@ mod tests {
 
         let recipe = response.json::<Recipe>();
 
-        assert_eq!(recipe.flour, 100);
-        assert_eq!(recipe.chocolate_chips, 20);
+        assert_eq!(*recipe.get("flour").unwrap_or(&0), 100);
+        assert_eq!(*recipe.get("chocolate chips").unwrap_or(&0), 20);
     }
 
     #[tokio::test]
@@ -141,15 +116,35 @@ mod tests {
         let recipe = response.json::<Report>();
 
         assert_eq!(recipe.cookies, 4);
-        assert_eq!(
-            recipe.pantry,
-            Recipe {
-                flour: 5,
-                sugar: 307,
-                butter: 2002,
-                baking_powder: 825,
-                chocolate_chips: 257,
-            }
-        );
+        assert_eq!(*recipe.pantry.get("flour").unwrap_or(&0), 5);
+        assert_eq!(*recipe.pantry.get("sugar").unwrap_or(&0), 307);
+        assert_eq!(*recipe.pantry.get("butter").unwrap_or(&0), 2002);
+        assert_eq!(*recipe.pantry.get("baking powder").unwrap_or(&0), 825);
+        assert_eq!(*recipe.pantry.get("chocolate chips").unwrap_or(&0), 257);
+    }
+
+    #[tokio::test]
+    async fn task3() {
+        let app = task();
+
+        // Run the application for testing.
+        let server = TestServer::new(app).unwrap();
+
+        // Send the request.
+        let response = server
+            .get("/bake")
+            .add_cookie(Cookie::new(
+                "recipe",
+                "eyJyZWNpcGUiOnsic2xpbWUiOjl9LCJwYW50cnkiOnsiY29iYmxlc3RvbmUiOjY0LCJzdGljayI6IDR9fQ==",
+            ))
+            .await;
+
+        response.assert_status(StatusCode::OK);
+
+        let recipe = response.json::<Report>();
+
+        assert_eq!(recipe.cookies, 0);
+        assert_eq!(*recipe.pantry.get("cobblestone").unwrap_or(&0), 64);
+        assert_eq!(*recipe.pantry.get("stick").unwrap_or(&0), 4);
     }
 }
