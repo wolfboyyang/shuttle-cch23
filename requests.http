@@ -78,3 +78,19 @@ content-type: text/plain
 
 "there is an elf on a shelf on an elf.
 there is also another shelf in Belfast."
+
+####################################
+# 🎄 Day 7: GET Santa some cookies #
+####################################
+
+### ⭐ Task 1: Based encoding, 64th edition
+GET http://localhost:8000/7/decode
+Cookie: recipe=eyJmbG91ciI6MTAwLCJjaG9jb2xhdGUgY2hpcHMiOjIwfQ==
+
+### 🎁 Task 2: The secret cookie recipe
+GET http://localhost:8000/7/bake
+Cookie: recipe=eyJyZWNpcGUiOnsiZmxvdXIiOjk1LCJzdWdhciI6NTAsImJ1dHRlciI6MzAsImJha2luZyBwb3dkZXIiOjEwLCJjaG9jb2xhdGUgY2hpcHMiOjUwfSwicGFudHJ5Ijp7ImZsb3VyIjozODUsInN1Z2FyIjo1MDcsImJ1dHRlciI6MjEyMiwiYmFraW5nIHBvd2RlciI6ODY1LCJjaG9jb2xhdGUgY2hpcHMiOjQ1N319
+
+### Task 3: Questionable cookie recipes
+GET http://localhost:8000/7/bake
+Cookie: recipe=eyJyZWNpcGUiOnsic2xpbWUiOjl9LCJwYW50cnkiOnsiY29iYmxlc3RvbmUiOjY0LCJzdGljayI6IDR9fQ==

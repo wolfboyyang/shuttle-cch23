@@ -199,6 +199,28 @@ dependencies = [
 ]
 
 [[package]]
+name = "axum-extra"
+version = "0.9.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "523ae92256049a3b02d3bb4df80152386cd97ddba0c8c5077619bdc8c4b1859b"
+dependencies = [
+ "axum 0.7.1",
+ "axum-core 0.4.0",
+ "bytes",
+ "cookie",
+ "futures-util",
+ "http 1.0.0",
+ "http-body 1.0.0",
+ "http-body-util",
+ "mime",
+ "pin-project-lite",
+ "serde",
+ "tower",
+ "tower-layer",
+ "tower-service",
+]
+
+[[package]]
 name = "axum-test"
 version = "14.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -293,7 +315,9 @@ name = "cch23-wolfboyyang"
 version = "0.1.0"
 dependencies = [
  "axum 0.7.1",
+ "axum-extra",
  "axum-test",
+ "base64",
  "serde",
  "serde_json",
  "shuttle-axum",
@@ -350,6 +374,7 @@ version = "0.18.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "3cd91cf61412820176e137621345ee43b3f4423e589e7ae4e50d601d93e35ef8"
 dependencies = [
+ "percent-encoding",
  "time",
  "version_check",
 ]
