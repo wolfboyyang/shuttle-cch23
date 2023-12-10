@@ -94,3 +94,22 @@ Cookie: recipe=eyJyZWNpcGUiOnsiZmxvdXIiOjk1LCJzdWdhciI6NTAsImJ1dHRlciI6MzAsImJha
 ### Task 3: Questionable cookie recipes
 GET http://localhost:8000/7/bake
 Cookie: recipe=eyJyZWNpcGUiOnsic2xpbWUiOjl9LCJwYW50cnkiOnsiY29iYmxlc3RvbmUiOjY0LCJzdGljayI6IDR9fQ==
+
+####################################
+# 🎄 Day 8: GET Santa some cookies #
+####################################
+
+### Test Pokemon Graphql API
+POST https://graphqlpokemon.favware.tech/v8
+content-type: application/json
+
+{
+  "query": "query GetPokemonByDexNumber($number: Int!) { getPokemonByDexNumber(number: $number) {key num weight}}",
+  "variables": {"number": 25}
+}
+
+### ⭐ Task 1: IT'S PIKACHU!
+GET http://localhost:8000/8/weight/25
+
+### 🎁 Task 2: That's gonna leave a dent
+GET http://localhost:8000/8/drop/25
