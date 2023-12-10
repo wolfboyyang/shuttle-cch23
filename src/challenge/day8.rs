@@ -33,7 +33,7 @@ pub fn task() -> Router {
         .with_state(client)
 }
 
-async fn get_weight(number: i32, client: Client) -> i64 {
+async fn get_weight(number: i32, client: Client) -> f64 {
     if let Ok(response) = client
         .post("https://graphqlpokemon.favware.tech/v8")
         .header("Content-Type", "application/json")
@@ -49,12 +49,12 @@ async fn get_weight(number: i32, client: Client) -> i64 {
     {
             let data: Value = serde_json::from_str(&response.text().await.unwrap()).unwrap();
             let weight = data["data"]["getPokemonByDexNumber"]["weight"]
-        .as_i64()
+        .as_f64()
         .unwrap();
             return weight;
     }
 
-    -1
+    -1.0
 }
 
 async fn get_pokemon_weight(
@@ -70,7 +70,7 @@ async fn drop_pokemon(Path(number): Path<i32>, State(client): State<Client>) -> 
 
     let height: f64 = 10.0;
     let gravity: f64 = 9.825;
-    let momentum = (gravity * height * 2.0).sqrt() * weight as f64;
+    let momentum = (gravity * height * 2.0).sqrt() * weight;
 
     (StatusCode::OK, momentum.to_string())
 }
