@@ -9,7 +9,6 @@ struct Serdeer {
     height: Option<i32>,
     antler_width: Option<i32>,
     snow_magic_power: Option<i32>,
-    #[allow(dead_code)]
     favorite_food: Option<String>,
     #[serde(rename = "cAnD13s_3ATeN-yesT3rdAy")]
     candies_eat_yesterday: Option<i32>,
@@ -61,7 +60,11 @@ async fn handle_cursed_candy_eating_contest(Json(payload): Json<Vec<Serdeer>>) -
             magician.name,
             magician.snow_magic_power.unwrap()
         ),
-        consumer: format!("{} ate lots of candies, but also some grass", consumer.name),
+        consumer: format!(
+            "{} ate lots of candies, but also some {}",
+            consumer.name,
+            consumer.favorite_food.as_ref().unwrap()
+        ),
     };
 
     Json(report)

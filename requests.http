@@ -59,6 +59,50 @@ content-type: application/json
       "cAnD13s_3ATeN-yesT3rdAy": 5
     }
 ]
+### extra test
+POST http://localhost:8000/4/contest
+content-type: application/json
+
+[
+    {
+        "name": "Comet",
+        "strength": 29,
+        "speed": 42.378589917764984,
+        "height": 59,
+        "antler_width": 20,
+        "snow_magic_power": 4796,
+        "favorite_food": "grass",
+        "cAnD13s_3ATeN-yesT3rdAy": 2
+    },
+    {
+        "name": "Blitzen",
+        "strength": 20,
+        "speed": 34.03420136230174,
+        "height": 59,
+        "antler_width": 39,
+        "snow_magic_power": 1387,
+        "favorite_food": "leaves",
+        "cAnD13s_3ATeN-yesT3rdAy": 9
+    },
+    {
+        "name": "Donner",
+        "strength": 14,
+        "speed": 39.49874839731527,
+        "height": 66,
+        "antler_width": 41,
+        "snow_magic_power": 1776,
+        "favorite_food": "berries",
+        "cAnD13s_3ATeN-yesT3rdAy": 6
+    }
+]
+
+### result
+{
+    "fastest": "Speeding past the finish line with a strength of 29 is Comet",
+    "tallest": "Donner is standing tall with his 41 cm wide antlers",
+    "magician": "Comet could blast you away with a snow magic power of 4796",
+    "consumer": "Blitzen ate lots of candies, but also some leaves"
+}
 
 ############################
 # 🎄 Day 6: Elf on a shelf #
