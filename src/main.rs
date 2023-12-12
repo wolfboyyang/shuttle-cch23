@@ -10,6 +10,7 @@ async fn main() -> shuttle_axum::ShuttleAxum {
         .nest("/6", challenge::day6::task())
         .nest("/7", challenge::day7::task())
         .nest("/8", challenge::day8::task())
+        .nest("/11", challenge::day11::task())
         .nest("/", challenge::day_1::task());
 
     Ok(router.into())

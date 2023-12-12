@@ -157,3 +157,21 @@ GET http://localhost:8000/8/weight/25
 
 ### 🎁 Task 2: That's gonna leave a dent
 GET http://localhost:8000/8/drop/25
+
+##########################################
+# 🎄 Day 11: Imagery from the North Pole #
+##########################################
+
+### ⭐ Task 1: Served on a silver platter
+GET http://localhost:8000/11/assets/decoration.png
+
+### 🎁 Task 2: Bull mode activated 
+POST http://localhost:8000/11/red_pixels
+content-type: multipart/form-data; boundary=----WebKitFormBoundary
+
+------WebKitFormBoundary
+Content-Disposition: form-data; name="image"; filename="decoration.png"
+Content-Type: image/png
+
+< ./assets/decoration.png
+------WebKitFormBoundary--
