@@ -14,10 +14,26 @@ pub fn task() -> Router {
     Router::new().route("/", post(count_elf))
 }
 
+fn check_elf_on_shelf(start: usize, text: &str) -> bool {
+    let elf_on_shelf = "elf on a shelf";
+    let len = elf_on_shelf.len();
+    let end = start + len;
+    if end > text.len() {
+        return false;
+    }
+    &text[start..end] == elf_on_shelf
+}
+
 async fn count_elf(body: String) -> Json<Report> {
-    let elf_count = body.matches("elf").count();
-    let elf_on_a_shelf_count =
-        body.matches("elf on a shelf").count() + body.matches("elf on that shelf").count();
+    let elf_indices = body.match_indices("elf");
+    let mut elf_on_a_shelf_count = 0;
+    let elf_count = elf_indices
+        .inspect(|(i, _)| {
+            if check_elf_on_shelf(*i, &body) {
+                elf_on_a_shelf_count += 1;
+            }
+        })
+        .count();
     let shelf_count = body.matches("shelf").count();
     let report = Report {
         elf: elf_count,
@@ -78,6 +94,69 @@ mod tests {
             "elf": 5,
             "elf on a shelf": 1,
             "shelf with no elf on it": 1
+        }));
+    }
+
+    #[tokio::test]
+    async fn task2_1() {
+        let app = task();
+
+        // Run the application for testing.
+        let server = TestServer::new(app).unwrap();
+
+        // Send the request.
+        let response = server.post("/").text("elf elf elf on a shelf").await;
+
+        response.assert_status(StatusCode::OK);
+
+        response.assert_json(&json!({
+            "elf": 4,
+            "elf on a shelf": 1,
+            "shelf with no elf on it": 0
+        }));
+    }
+
+    #[tokio::test]
+    async fn task2_2() {
+        let app = task();
+
+        // Run the application for testing.
+        let server = TestServer::new(app).unwrap();
+
+        // Send the request.
+        let response = server
+            .post("/")
+            .text("In Belfast I heard an elf on a shelf on a shelf on a ")
+            .await;
+
+        response.assert_status(StatusCode::OK);
+
+        response.assert_json(&json!({
+            "elf": 4,
+            "elf on a shelf": 2,
+            "shelf with no elf on it": 0
+        }));
+    }
+
+    #[tokio::test]
+    async fn task2_3() {
+        let app = task();
+
+        // Run the application for testing.
+        let server = TestServer::new(app).unwrap();
+
+        // Send the request.
+        let response = server
+            .post("/")
+            .text("Somewhere in Belfast under a shelf store but above the shelf realm there's an elf on a shelf on a shelf on a shelf on a elf on a shelf on a shelf on a shelf on a shelf on a elf on a elf on a elf on a shelf on a ")
+            .await;
+
+        response.assert_status(StatusCode::OK);
+
+        response.assert_json(&json!({
+            "elf": 16,
+            "elf on a shelf": 8,
+            "shelf with no elf on it": 2
         }));
     }
 }
