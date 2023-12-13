@@ -20,6 +20,7 @@ assert_approx_eq = "1.1.0"
 lodepng = "3.9.2"
 ulid = { version = "1.1.0", features = ["uuid"] }
 uuid = "1.6.1"
+chrono = "0.4.31"
 
 [dev-dependencies]
 axum-test = "14.0.0"
