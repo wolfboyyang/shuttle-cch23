@@ -1,10 +1,12 @@
 use axum::{
     extract::{Path, State},
     routing::{get, post},
-    Router,
+    Json, Router,
 };
 use std::time::Instant;
 use std::{collections::HashMap, sync::Arc};
+use ulid::Ulid;
+use uuid::Uuid;
 
 type SharedState = Arc<std::sync::RwLock<AppState>>;
 
@@ -19,6 +21,7 @@ pub fn task() -> Router {
     Router::new()
         .route("/save/:data", post(save_data))
         .route("/load/:data", get(load_data))
+        .route("/ulids", post(convert_ulids))
         .with_state(shared_state)
 }
 
@@ -31,6 +34,16 @@ async fn load_data(Path(data): Path<String>, State(state): State<SharedState>) -
     let time_capsule = &state.read().unwrap().time_capsule;
     let time = time_capsule.get(&data).unwrap();
     (*time).elapsed().as_secs().to_string()
+}
+
+// Convert all the ULIDs to UUIDs and return a new array but in reverse order.
+async fn convert_ulids(data: Json<Vec<String>>) -> Json<Vec<String>> {
+    let ids: Vec<String> = data
+        .iter()
+        .map(|id| Uuid::from(Ulid::from_string(id).unwrap()).to_string())
+        .rev()
+        .collect();
+    Json(ids)
 }
 
 #[cfg(test)]
