@@ -139,9 +139,9 @@ Cookie: recipe=eyJyZWNpcGUiOnsiZmxvdXIiOjk1LCJzdWdhciI6NTAsImJ1dHRlciI6MzAsImJha
 GET http://localhost:8000/7/bake
 Cookie: recipe=eyJyZWNpcGUiOnsic2xpbWUiOjl9LCJwYW50cnkiOnsiY29iYmxlc3RvbmUiOjY0LCJzdGljayI6IDR9fQ==
 
-####################################
-# 🎄 Day 8: GET Santa some cookies #
-####################################
+#########################
+# 🎄 Day 8: PokéPhysics #
+#########################
 
 ### Test Pokemon Graphql API
 POST https://graphqlpokemon.favware.tech/v8
@@ -175,3 +175,13 @@ Content-Type: image/png
 
 < ./assets/decoration.png
 ------WebKitFormBoundary--
+
+#########################
+# 🎄 Day 12: Timekeeper #
+#########################
+
+### ⭐ Task 1: How To Time Persist?
+POST http://localhost:8000/12/save/packet20231212
+
+###
+GET http://localhost:8000/12/load/packet20231212
