@@ -226,3 +226,19 @@ Content-Type: application/json'
 
 ###
 GET http://localhost:8000/13/orders/popular
+
+###############################
+# 🎄 Day 14: Reindeering HTML #
+###############################
+
+### ⭐ Task 1: Ho-ho, Toymaking Magic Land! (HTML)
+POST http://localhost:8000/14/unsafe
+Content-Type: application/json
+
+{"content": "<h1>Welcome to the North Pole!</h1>"}
+
+### 🎁 Task 2: Safety 2nd
+POST http://localhost:8000/14/safe
+Content-Type: application/json
+
+{"content": "<script>alert(\"XSS Attack!\")</script>"}
