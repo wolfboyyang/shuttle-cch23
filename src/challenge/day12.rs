@@ -5,7 +5,7 @@ use axum::{
 };
 use chrono::{DateTime, Datelike, Utc};
 use serde::{Deserialize, Serialize};
-use std::time::{Instant, SystemTime};
+use std::time::Instant;
 use std::{collections::HashMap, sync::Arc};
 use ulid::Ulid;
 use uuid::Uuid;

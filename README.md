@@ -14,3 +14,11 @@ Test with curl or [REST Client](https://marketplace.visualstudio.com/items?itemN
 
 Test specific day (e.g., day1):
 `cargo test day1`
+
+## Shuttle Shared DB
+
+to use the query! macro, you may need to run:
+
+```sh
+cargo sqlx prepare # with DATABASE_URL in .env
+```

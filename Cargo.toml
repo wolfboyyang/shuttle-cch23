@@ -21,6 +21,12 @@ lodepng = "3.9.2"
 ulid = { version = "1.1.0", features = ["uuid"] }
 uuid = "1.6.1"
 chrono = "0.4.31"
+shuttle-shared-db = { version = "0.35.1", features = ["postgres-rustls"] }
+sqlx = { version = "0.7.3", features = [
+    "runtime-tokio-rustls",
+    "postgres",
+    "macros",
+] }
 
 [dev-dependencies]
 axum-test = "14.0.0"
