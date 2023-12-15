@@ -20,7 +20,9 @@ struct Order {
     quantity: i32,
 }
 
-pub fn task(state: MyState) -> Router {
+pub fn task(pool: PgPool) -> Router {
+    let state = MyState { pool };
+
     Router::new()
         .route("/sql", get(simple_query))
         .route("/reset", post(reset))
