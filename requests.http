@@ -242,3 +242,44 @@ POST http://localhost:8000/14/safe
 Content-Type: application/json
 
 {"content": "<script>alert(\"XSS Attack!\")</script>"}
+
+#####################################
+# 🎄 Day 15: The Password Validator #
+#####################################
+
+### ⭐ Task 1: Naughty or Nice Strings
+POST http://localhost:8000/15/nice
+Content-Type: application/json
+
+{"input": "hello there"}
+
+###
+POST http://localhost:8000/15/nice
+Content-Type: application/json
+
+{"input": "abcd"}
+
+###
+POST http://localhost:8000/15/nice
+Content-Type: application/json
+
+{Grinch? GRINCH!}
+
+### 🎁 Task 2: Game of the Year
+
+POST http://localhost:8000/15/game
+Content-Type: application/json
+
+{"input": "password"}
+
+###
+POST http://localhost:8000/15/game
+Content-Type: application/json
+
+{"input": "Password12345"}
+
+###
+POST http://localhost:8000/15/game
+Content-Type: application/json
+
+{"input": "23jPassword2000y"}
