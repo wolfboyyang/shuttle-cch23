@@ -5,12 +5,8 @@ use axum::{
     Json, Router,
 };
 use serde::{Deserialize, Serialize};
-use sqlx::PgPool;
 
-#[derive(Clone)]
-pub struct MyState {
-    pub pool: PgPool,
-}
+use super::my_state::MyState;
 
 #[derive(Deserialize, Serialize)]
 struct Order {
@@ -20,9 +16,7 @@ struct Order {
     quantity: i32,
 }
 
-pub fn task(pool: PgPool) -> Router {
-    let state = MyState { pool };
-
+pub fn task(state: MyState) -> Router {
     Router::new()
         .route("/sql", get(simple_query))
         .route("/reset", post(reset))
@@ -49,10 +43,10 @@ async fn reset(State(state): State<MyState>) {
 
     sqlx::query!(
         "CREATE TABLE orders (
-        id INT PRIMARY KEY,
-        region_id INT,
-        gift_name VARCHAR(50),
-        quantity INT
+            id INT PRIMARY KEY,
+            region_id INT,
+            gift_name VARCHAR(50),
+            quantity INT
       )"
     )
     .execute(&state.pool)
