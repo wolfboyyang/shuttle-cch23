@@ -1,6 +1,7 @@
 use axum::{http::StatusCode, response::IntoResponse, routing::post, Json, Router};
 use fancy_regex::Regex;
 use serde::{Deserialize, Serialize};
+use sha2::{Digest, Sha256};
 
 #[derive(Deserialize, Serialize)]
 struct Report {
@@ -147,8 +148,15 @@ async fn play_game(payload: String) -> impl IntoResponse {
             }
 
             // Rule 9: the hexadecimal representation of the sha256 hash must end with an a
-            ;
-            if !sha256::digest(text).ends_with('a') {
+            // create a Sha256 object
+            let mut hasher = Sha256::new();
+
+            // write input message
+            hasher.update(text);
+
+            // read hash digest and consume hasher
+            let result = hasher.finalize();
+            if !hex::encode(result).ends_with('a') {
                 return (
                     StatusCode::IM_A_TEAPOT,
                     Json(Report {
