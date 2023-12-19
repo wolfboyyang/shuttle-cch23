@@ -11,7 +11,7 @@ async fn main(#[shuttle_shared_db::Postgres] pool: PgPool) -> shuttle_axum::Shut
         .await
         .map_err(CustomError::new)?;
 
-    let state = challenge::my_state::MyState { pool };
+    let state = challenge::db::MyState { pool };
 
     let router = Router::new()
         .nest("/1", challenge::day1::task())

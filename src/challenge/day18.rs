@@ -8,21 +8,7 @@ use axum::{
 };
 use serde::{Deserialize, Serialize};
 
-use super::my_state::MyState;
-
-#[derive(Deserialize, Serialize)]
-struct Order {
-    id: i32,
-    region_id: i32,
-    gift_name: String,
-    quantity: i32,
-}
-
-#[derive(Deserialize, Serialize)]
-struct Region {
-    id: i32,
-    name: String,
-}
+use super::db::{MyState, reset, insert_orders, insert_regions};
 
 #[derive(Deserialize, Serialize)]
 struct RegionGift {
@@ -39,68 +25,6 @@ pub fn task(state: MyState) -> Router {
         .route("/regions/total", get(regions_total_quantity))
         .route("/regions/top_list/:num", get(regions_toplist))
         .with_state(state)
-}
-
-async fn reset(State(state): State<MyState>) {
-    sqlx::query!("DROP TABLE IF EXISTS orders")
-        .execute(&state.pool)
-        .await
-        .unwrap();
-
-    sqlx::query!("DROP TABLE IF EXISTS regions")
-        .execute(&state.pool)
-        .await
-        .unwrap();
-
-    sqlx::query!(
-        "CREATE TABLE regions (
-            id INT PRIMARY KEY,
-            name VARCHAR(50)
-        )"
-    )
-    .execute(&state.pool)
-    .await
-    .unwrap();
-
-    sqlx::query!(
-        "CREATE TABLE orders (
-            id INT PRIMARY KEY,
-            region_id INT,
-            gift_name VARCHAR(50),
-            quantity INT
-      )"
-    )
-    .execute(&state.pool)
-    .await
-    .unwrap();
-}
-
-async fn insert_orders(State(state): State<MyState>, Json(data): Json<Vec<Order>>) {
-    for order in data {
-        sqlx::query!(
-            "INSERT INTO orders (id, region_id, gift_name, quantity) VALUES ($1, $2, $3, $4)",
-            order.id,
-            order.region_id,
-            order.gift_name,
-            order.quantity,
-        )
-        .execute(&state.pool)
-        .await
-        .unwrap();
-    }
-}
-
-async fn insert_regions(State(state): State<MyState>, Json(data): Json<Vec<Region>>) {
-    for region in data {
-        sqlx::query!(
-            "INSERT INTO regions (id, name) VALUES ($1, $2)",
-            region.id,
-            region.name
-        )
-        .execute(&state.pool)
-        .await
-        .unwrap();
-    }
 }
 
 async fn regions_total_quantity(State(state): State<MyState>) -> impl IntoResponse {

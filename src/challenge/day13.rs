@@ -4,17 +4,8 @@ use axum::{
     routing::{get, post},
     Json, Router,
 };
-use serde::{Deserialize, Serialize};
 
-use super::my_state::MyState;
-
-#[derive(Deserialize, Serialize)]
-struct Order {
-    id: i32,
-    region_id: i32,
-    gift_name: String,
-    quantity: i32,
-}
+use super::db::{insert_orders, reset, MyState};
 
 pub fn task(state: MyState) -> Router {
     Router::new()
@@ -33,40 +24,6 @@ async fn simple_query(State(state): State<MyState>) -> String {
         .unwrap();
 
     record.id.to_string()
-}
-
-async fn reset(State(state): State<MyState>) {
-    sqlx::query!("DROP TABLE IF EXISTS orders")
-        .execute(&state.pool)
-        .await
-        .unwrap();
-
-    sqlx::query!(
-        "CREATE TABLE orders (
-            id INT PRIMARY KEY,
-            region_id INT,
-            gift_name VARCHAR(50),
-            quantity INT
-      )"
-    )
-    .execute(&state.pool)
-    .await
-    .unwrap();
-}
-
-async fn insert_orders(State(state): State<MyState>, Json(data): Json<Vec<Order>>) {
-    for order in data {
-        sqlx::query!(
-            "INSERT INTO orders (id, region_id, gift_name, quantity) VALUES ($1, $2, $3, $4)",
-            order.id,
-            order.region_id,
-            order.gift_name,
-            order.quantity,
-        )
-        .execute(&state.pool)
-        .await
-        .unwrap();
-    }
 }
 
 async fn orders_total_quantity(State(state): State<MyState>) -> impl IntoResponse {
