@@ -137,7 +137,7 @@ async fn play_game(payload: String) -> impl IntoResponse {
 
             // Rule 8: must contain at least one emoji
 
-            if emojito::find_emoji(text).len() == 0 {
+            if emojito::find_emoji(text).is_empty() {
                 return (
                     StatusCode::UPGRADE_REQUIRED,
                     Json(Report {

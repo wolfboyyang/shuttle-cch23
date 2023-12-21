@@ -23,7 +23,7 @@ async fn activate_bull_mode(mut multipart: Multipart) -> String {
                 .count()
                 .to_string(),
             Ok(_) => "Decoded image, but it was not RGBA".into(),
-            Err(reason) => format!("Could not load, because: {reason}").into(),
+            Err(reason) => format!("Could not load, because: {reason}"),
         };
     }
     "No image found".into()

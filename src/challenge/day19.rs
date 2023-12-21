@@ -2,7 +2,7 @@ use std::{
     collections::HashMap,
     ops::ControlFlow,
     sync::{
-        atomic::{AtomicBool, AtomicU32, AtomicUsize, Ordering},
+        atomic::{AtomicBool, AtomicUsize, Ordering},
         Arc,
     },
 };
@@ -112,10 +112,6 @@ async fn handle_chat_socket(socket: WebSocket, room: u32, user: String, state: G
         .subscribe();
     tracing::info!("{} joined room {}", user, room);
 
-    //rx.borrow_and_update();
-
-    let send_state = state.clone();
-    let send_user = user.clone();
     // This task will receive watch messages and forward it to this connected client.
     let mut send_task = tokio::spawn(async move {
         while let Ok(()) = rx.changed().await {
@@ -245,7 +241,7 @@ async fn process_chat_message(
         Message::Text(text) => {
             let msg = serde_json::from_str::<Value>(&text).unwrap();
             let message = msg.get("message").unwrap().as_str().unwrap();
-            if let None = msg.get("user") {
+            if msg.get("user").is_none() {
                 // this is a tweet
                 //tracing::info!("received new tweet: {} from {}", message, user);
                 if message.len() > 128 {
