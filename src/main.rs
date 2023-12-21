@@ -25,6 +25,7 @@ async fn main(#[shuttle_shared_db::Postgres] pool: PgPool) -> shuttle_axum::Shut
         .nest("/14", challenge::day14::task())
         .nest("/15", challenge::day15::task())
         .nest("/18", challenge::day18::task(state))
+        .nest("/19", challenge::day19::task())
         .nest("/", challenge::day_1::task());
 
     Ok(router.into())
