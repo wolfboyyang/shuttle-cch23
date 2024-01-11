@@ -4,41 +4,39 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-axum = { version = "0.7.2", features = ["multipart", "ws"] }
-axum-extra = { version = "0.9.0", features = ["cookie"] }
+axum = { version = "0.7.3", features = ["multipart", "ws"] }
+axum-extra = { version = "0.9.1", features = ["cookie"] }
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
-shuttle-runtime = "0.35.0"
-shuttle-axum = { version = "0.35.0", default-features = false, features = [
-    "axum-0-7",
-] }
+shuttle-runtime = "0.36.0"
+shuttle-axum = "0.36.0"
 tower-http = { version = "0.5.0", features = ["fs"] }
 tracing = "0.1.40"
-base64 = "0.21.5"
-reqwest = { version = "0.11.22", features = ["multipart"] }
+base64 = "0.21.6"
+reqwest = { version = "0.11.23", features = ["multipart"] }
 assert_approx_eq = "1.1.0"
 lodepng = "3.9.2"
 ulid = { version = "1.1.0", features = ["uuid"] }
 uuid = "1.6.1"
 chrono = "0.4.31"
-shuttle-shared-db = { version = "0.35.1", features = ["postgres-rustls"] }
+shuttle-shared-db = { version = "0.36.0", features = ["postgres-rustls"] }
 sqlx = { version = "0.7.3", features = [
     "runtime-tokio-rustls",
     "postgres",
     "macros",
 ] }
-fancy-regex = "0.12.0"
+fancy-regex = "0.13.0"
 emojito = "0.3.5"
 sha2 = "0.10.8"
 hex = "0.4.3"
 tokio = { version = "1.35.1", features = ["full"] }
-futures = "0.3.29"
+futures = "0.3.30"
 tar = "0.4.40"
 bytes = "1.5.0"
-tempfile = "3.8.1"
+tempfile = "3.9.0"
 git2 = "0.18.1"
 
 [dev-dependencies]
-axum-test = "14.0.0"
+axum-test = "14.2.2"
 tokio = { version = "1.35.1", features = ["full"] }
 serde_json = "1.0"
