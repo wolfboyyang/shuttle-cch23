@@ -22,3 +22,8 @@ to use the query! macro, you may need to run:
 ```sh
 cargo sqlx prepare # with DATABASE_URL in .env
 ```
+
+## Reference
+
+- [Solution by @razzdrgn]([https://github.com/razzdrgn/shuttle-cch23)
+- [Wiki by @razzdrgn](https://github.com/razzdrgn/shuttle-cch23/wiki)
