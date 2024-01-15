@@ -17,9 +17,7 @@ async fn get_present(text: String) -> impl IntoResponse {
         .filter(|line| !line.is_empty())
         .map(|num| num.trim().parse::<u64>().unwrap())
         .fold(HashMap::new(), |mut dict, num| {
-            if dict.contains_key(&num) {
-                dict.remove_entry(&num);
-            } else {
+            if dict.remove(&num).is_none() {
                 dict.insert(num, ());
             }
             dict
@@ -34,19 +32,17 @@ async fn get_path(text: String) -> impl IntoResponse {
     let mut input = text
         .lines()
         .map(|line| line.trim())
-        //.inspect(|line| println!("Processing line: {}", line))
         .filter(|line| !line.is_empty());
 
     let num_of_stars = input.next().unwrap().parse::<usize>().unwrap();
 
     let map = input
         .clone()
-        .take(num_of_stars as usize)
-        //.inspect(|line| println!("convert map: {}", line))
+        .take(num_of_stars)
         .map(|line| {
             line.split(' ')
                 .map(|num| num.parse::<i32>().unwrap())
-                .collect::<Vec<i32>>()
+                .collect::<Vec<_>>()
         })
         .map(|coords| IVec3::new(coords[0], coords[1], coords[2]))
         .collect::<Vec<_>>();
@@ -57,7 +53,6 @@ async fn get_path(text: String) -> impl IntoResponse {
 
     let portals = input
         .take(num_of_portals)
-        //.inspect(|line| println!("convert connection: {}", line))
         .map(|line| {
             line.split(' ')
                 .map(|num| num.parse::<u32>().unwrap())

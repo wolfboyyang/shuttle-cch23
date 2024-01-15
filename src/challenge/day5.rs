@@ -25,7 +25,7 @@ async fn list_names(
         .iter()
         .skip(offset)
         .take(limit)
-        .map(|x| x.clone())
+        .cloned()
         .collect::<Vec<String>>();
     if let Some(split) = pagination.split {
         if split == 0 {
