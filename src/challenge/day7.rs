@@ -3,7 +3,12 @@ use axum_extra::extract::cookie::CookieJar;
 use base64::{engine::general_purpose, Engine as _};
 use serde::{Deserialize, Serialize};
 
-type Recipe = std::collections::HashMap<String, i32>;
+type Recipe = std::collections::HashMap<String, i64>;
+
+#[derive(Serialize, Deserialize)]
+struct SimpleRecipe {
+    recipe: Recipe,
+}
 
 #[derive(Serialize, Deserialize)]
 struct Kitchen {
@@ -13,7 +18,7 @@ struct Kitchen {
 
 #[derive(Serialize, Deserialize)]
 struct Report {
-    cookies: i32,
+    cookies: i64,
     pantry: Recipe,
 }
 
@@ -23,12 +28,12 @@ pub fn task() -> Router {
         .route("/bake", get(bake_cookie))
 }
 
-async fn decode_cookie(jar: CookieJar) -> Json<Recipe> {
+async fn decode_cookie(jar: CookieJar) -> Json<SimpleRecipe> {
     let encoded_recipe = jar.get("recipe").unwrap();
     let decoded_recipe = general_purpose::STANDARD
         .decode(encoded_recipe.value())
         .unwrap();
-    let recipe = serde_json::from_slice::<Recipe>(&decoded_recipe).unwrap();
+    let recipe = serde_json::from_slice::<SimpleRecipe>(&decoded_recipe).unwrap();
 
     Json(recipe)
 }
@@ -38,13 +43,16 @@ async fn bake_cookie(jar: CookieJar) -> Json<Report> {
     let decoded_recipe = general_purpose::STANDARD
         .decode(encoded_recipe.value())
         .unwrap();
+
     let mut kitchen = serde_json::from_slice::<Kitchen>(&decoded_recipe).unwrap();
 
     let cookies = kitchen
-        .pantry
+        .recipe
         .iter()
-        .map(|(ingredient, amount_in_store)| {
-            if let Some(amount_needed) = kitchen.recipe.get(ingredient) {
+        .map(|(ingredient, amount_needed)| {
+            if amount_needed == &0 {
+                i64::MAX
+            } else if let Some(amount_in_store) = kitchen.pantry.get(ingredient) {
                 amount_in_store / amount_needed
             } else {
                 0
@@ -58,6 +66,7 @@ async fn bake_cookie(jar: CookieJar) -> Json<Report> {
             *amount_in_store -= amount_needed * cookies
         }
     }
+
     Json(Report {
         cookies,
         pantry: kitchen.pantry,
@@ -78,21 +87,26 @@ mod tests {
         // Run the application for testing.
         let server = TestServer::new(app).unwrap();
 
+        let data = serde_json::json!({
+            "recipe": {
+                "flour": 4,
+                "sugar": 3,
+                "butter": 3,
+                "baking powder": 1,
+                "raisins": 50
+            },
+        });
+        let b64 = general_purpose::STANDARD.encode(serde_json::to_vec(&data).unwrap());
+
         // Send the request.
         let response = server
             .get("/decode")
-            .add_cookie(Cookie::new(
-                "recipe",
-                "eyJmbG91ciI6MTAwLCJjaG9jb2xhdGUgY2hpcHMiOjIwfQ==",
-            ))
+            .add_cookie(Cookie::new("recipe", b64))
             .await;
 
         response.assert_status(StatusCode::OK);
 
-        let recipe = response.json::<Recipe>();
-
-        assert_eq!(*recipe.get("flour").unwrap_or(&0), 100);
-        assert_eq!(*recipe.get("chocolate chips").unwrap_or(&0), 20);
+        response.assert_json(&data);
     }
 
     #[tokio::test]
