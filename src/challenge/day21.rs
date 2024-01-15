@@ -13,11 +13,7 @@ async fn get_coords(Path(id): Path<String>) -> impl IntoResponse {
     let (latitude_angle, longitude_angle) = get_coordinates(id);
 
     let latitude = DMS::from_ddeg_latitude(latitude_angle);
-    let longitude = DMS::from_ddeg_angle(longitude_angle).with_cardinal(if longitude_angle < 0.0 {
-        dms_coordinates::Cardinal::West
-    } else {
-        dms_coordinates::Cardinal::East
-    });
+    let longitude = DMS::from_ddeg_longitude(longitude_angle);
 
     format!("{} {}", format_dms(latitude), format_dms(longitude))
 }
