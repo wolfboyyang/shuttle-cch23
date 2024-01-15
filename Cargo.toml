@@ -39,6 +39,8 @@ s2 = "0.0.12"
 dms-coordinates = "1.2.0"
 country-boundaries = "1.2.0"
 rust_iso3166 = "0.1.11"
+glam = "0.25.0"
+pathfinding = "4.8.1"
 
 [dev-dependencies]
 axum-test = "14.2.2"

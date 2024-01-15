@@ -1,9 +1,13 @@
 use std::collections::HashMap;
 
 use axum::{response::IntoResponse, routing::post, Router};
+use glam::{IVec3, UVec2};
+use pathfinding::directed::bfs::bfs;
 
 pub fn task() -> Router {
-    Router::new().route("/integers", post(get_present))
+    Router::new()
+        .route("/integers", post(get_present))
+        .route("/rocket", post(get_path))
 }
 
 async fn get_present(text: String) -> impl IntoResponse {
@@ -26,39 +30,58 @@ async fn get_present(text: String) -> impl IntoResponse {
     "🎁".repeat(ord_num as usize)
 }
 
-#[cfg(test)]
-mod tests {
-    use super::*;
-    use axum::http::StatusCode;
-    use axum_test::TestServer;
+async fn get_path(text: String) -> impl IntoResponse {
+    let mut input = text
+        .lines()
+        .map(|line| line.trim())
+        //.inspect(|line| println!("Processing line: {}", line))
+        .filter(|line| !line.is_empty());
 
-    #[tokio::test]
-    async fn task1() {
-        let app = task();
+    let num_of_stars = input.next().unwrap().parse::<usize>().unwrap();
 
-        // Run the application for testing.
-        let server = TestServer::new(app).unwrap();
+    let map = input
+        .clone()
+        .take(num_of_stars as usize)
+        //.inspect(|line| println!("convert map: {}", line))
+        .map(|line| {
+            line.split(' ')
+                .map(|num| num.parse::<i32>().unwrap())
+                .collect::<Vec<i32>>()
+        })
+        .map(|coords| IVec3::new(coords[0], coords[1], coords[2]))
+        .collect::<Vec<_>>();
 
-        // Send the request.
-        let response = server.get("/4/8").await;
+    let mut input = input.skip(num_of_stars).clone();
 
-        response.assert_status(StatusCode::OK);
+    let num_of_portals = input.next().unwrap().parse::<usize>().unwrap();
 
-        response.assert_text(1728.to_string());
-    }
+    let portals = input
+        .take(num_of_portals)
+        //.inspect(|line| println!("convert connection: {}", line))
+        .map(|line| {
+            line.split(' ')
+                .map(|num| num.parse::<u32>().unwrap())
+                .collect::<Vec<_>>()
+        })
+        .map(|connection| UVec2::new(connection[0], connection[1]))
+        .collect::<Vec<_>>();
 
-    #[tokio::test]
-    async fn task2() {
-        let app = task();
+    let path = bfs(
+        &0,
+        |p: &usize| {
+            portals
+                .iter()
+                .filter(|c| c.x as usize == *p)
+                .map(|c| c.y as usize)
+                .collect::<Vec<_>>()
+        },
+        |p| *p == num_of_stars - 1,
+    )
+    .unwrap();
 
-        // Run the application for testing.
-        let server = TestServer::new(app).unwrap();
+    let distance = path.windows(2).fold(0.0, |acc, p| {
+        acc + ((map[p[0]] - map[p[1]]).length_squared() as f32).sqrt()
+    });
 
-        // Send the request.
-        let response = server.get("4/5/8/10").await;
-
-        response.assert_status(StatusCode::OK);
-
-        response.assert_text(27.to_string());
-    }
+    format!("{} {:.3}", path.len() - 1, distance)
 }
